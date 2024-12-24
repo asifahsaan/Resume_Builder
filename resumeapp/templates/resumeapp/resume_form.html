@@ -81,6 +81,18 @@
 
                 <h4>Awards</h4>
                 <textarea class="form-control mb-3" id="awards" name="awards" placeholder="Comma-separated awards" oninput="updatePreview()"></textarea>
+                <h4>Choose Template</h4>
+
+                <div class="mb-3">
+                    <input type="hidden" name="selected_template" value="modern" />
+                    <select name="selected_template">
+                        <option value="traditional">Traditional</option>
+                        <option value="modern">Modern</option>
+                        <option value="creative">Creative</option>
+                        <option value="executive">Executive</option>
+                      </select>                      
+                </div>
+
                 <button type="submit" class="btn btn-success btn-lg">Download Resume</button>
             </form>
         </div>
