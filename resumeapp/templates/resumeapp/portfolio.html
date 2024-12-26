@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>{{ data.name }} - Portfolio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    /* General Styles */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      scroll-behavior: smooth;
+      font-family: Arial, sans-serif;
+    }
+
+    section {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .hero {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                    url('hero-bg.jpg') no-repeat center center/cover;
+        color: white;
+        text-align: left;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .hero .hero-content {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    .hero .hero-image {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero h1 {
+      font-size: 10rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
+
+    .nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav a.active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .scroll-arrow {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1000;
+      transition: background-color 0.3s ease;
+    }
+
+    .scroll-arrow:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .section-bg-1 { background-color: #f7f7f7; }
+    .section-bg-2 { background-color: #eaeaea; }
+    .section-bg-3 { background-color: #dedede; }
+    .section-bg-4 { background-color: #cfcfcf; }
+  </style>
+</head>
+<body>
+
+<!-- Sticky Navigation -->
+<div class="nav" id="navbar">
+  <div>{{ data.name }}</div>
+  <div>
+    <a href="#intro">Intro</a>
+    <a href="#summary">Summary</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#activities">Activities</a>
+    <a href="#awards">Awards</a>
+  </div>
+</div>
+
+<!-- Scroll Arrow Button -->
+<button class="scroll-arrow" id="scroll-arrow">&#8595;</button>
+
+<!-- Hero Section -->
+<section class="hero" id="intro">
+    <div class="hero-content">
+      <p>Hello, I am</p>
+      <h1>{{ data.name }}</h1>
+      <p style="text-align: right; margin-right: 7em; font-size: 2em;"> Data Scientist </p>
+      <a href="#portfolio" class="btn">View My Portfolio</a>
+    </div>
+    <div class="hero-image">
+      <img src="https://via.placeholder.com/300" alt="Demo Image" style="max-width: 100%; border-radius: 10px;">
+    </div>
+</section>
+
+<!-- Summary Section -->
+<section id="summary" class="section-bg-1">
+  <div>
+    <h2>Summary</h2>
+    <p>{{ data.summary }}</p>
+  </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="section-bg-2">
+  <div>
+    <h2>Skills</h2>
+    <ul>
+      {% for skill in data.skills %}
+        <li>{{ skill }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="section-bg-3">
+  <div>
+    <h2>Projects</h2>
+    {% for project in data.projects %}
+      <div>
+        <h3>{{ project.title }}</h3>
+        <p>{{ project.description }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Activities Section -->
+<section id="activities" class="section-bg-4">
+  <div>
+    <h2>Clubs & Activities</h2>
+    {% for act in data.activities %}
+      <h3>{{ act.name }} (Role: {{ act.role }})</h3>
+      <p>{{ act.description }}</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Awards Section -->
+<section id="awards" class="section-bg-1">
+  <div>
+    <h2>Awards & Achievements</h2>
+    <ul>
+      {% for award in data.awards %}
+        <li>{{ award }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<script>
+  // Smooth scrolling for sections
+  document.addEventListener('wheel', function(event) {
+    const sections = document.querySelectorAll('section');
+    const currentIndex = Array.from(sections).findIndex(section => {
+      const rect = section.getBoundingClientRect();
+      return rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2;
+    });
+
+    if (event.deltaY > 0 && currentIndex < sections.length - 1) {
+      sections[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+    } else if (event.deltaY < 0 && currentIndex > 0) {
+      sections[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+
+    event.preventDefault();
+  }, { passive: false });
+
+  // Scroll arrow functionality
+  document.getElementById('scroll-arrow').addEventListener('click', function() {
+    const sections = document.querySelectorAll('section');
+    const currentIndex = Array.from(sections).findIndex(section => {
+      const rect = section.getBoundingClientRect();
+      return rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2;
+    });
+
+    if (currentIndex < sections.length - 1) {
+      sections[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  // Highlight active section in navbar
+  document.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('section');
+    const navbarLinks = document.querySelectorAll('.nav a');
+
+    sections.forEach((section, index) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+        navbarLinks.forEach(link => link.classList.remove('active'));
+        navbarLinks[index].classList.add('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

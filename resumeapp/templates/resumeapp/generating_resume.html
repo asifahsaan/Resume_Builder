@@ -1,0 +1,89 @@
+<!-- generating_resume.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Generating Resume</title>
+  <style>
+    .spinner {
+      margin: 50px auto;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .center {
+      text-align: center;
+      margin-top: 80px;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+{% comment %}
+  The crucial part: 
+  We output the CSRF token somewhere in the HTML for our JS to read.
+{% endcomment %}
+<form style="display:none;" method="post">
+    {% csrf_token %}
+</form>
+
+<div class="center">
+  <h2>Please Wait...</h2>
+  <div class="spinner"></div>
+  <p>Generating your resume. This may take a few seconds.</p>
+</div>
+
+<script>
+  // ===== 1. Grab CSRF token from the DOM =====
+  // This snippet from Django docs: https://docs.djangoproject.com/en/4.2/ref/csrf/
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  // ===== 2. Immediately call the generation endpoint with the CSRF token =====
+  window.addEventListener("load", function() {
+    fetch("/start-generation/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrftoken,        // <-- CRUCIAL HEADER
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})           // no data needed, we're just telling server to proceed
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.filename) {
+        // Once done, redirect to a page that says "Download Ready"
+        window.location.href = "/download-finished/" + data.filename + "/";
+      } else {
+        alert("Error: " + JSON.stringify(data));
+      }
+    })
+    .catch(err => {
+      alert("Error generating resume: " + err);
+    });
+  });
+</script>
+
+</body>
+</html>
